@@ -1,54 +1,59 @@
-# React + TypeScript + Vite
+# Create-Event
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Event Calendar is the first part of a desing and creation series of smaller projects.
 
-Currently, two official plugins are available:
+- Event calendar
+- Events Creator Frontend
+- Events Creator Api
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Introduction
 
-## Expanding the ESLint configuration
+This task will require you to use React Typescript. You will need to organize your code into components and determine where to handle the logic. You shouldn't use any component libraries.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## MVP
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Create a page that displays a calendar. The calendar should include a title showing the current month and a grid of days (Please note that you DO NOT have to use css grid to style it).
+• Each of the days cells should be clickable.
+• When a user click on a chosen day, a modal should appear (empty for now)
+• The user should be able to navigate between months - view the upcoming month, previous month etc.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Build Steps
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- how to build / run project
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+---
+
+## Design Goals / Approach
+
+- Version control using GitHub
+- Project management using GitHub Issues and Linear
+- API-First approach using OpenAPI and SwaggerHub
+- Test-driven development TDO: Red, Green, Refactor development cycle
+- Continuous integration/ continuous deployment using GitHub Actions
+
+- I chose to use ModelMapper in this project.
+- I chose to use JavaFaker for data seeding
+- I am using Abstract class as a BaseEntity class holding ID, createdAt and updatedAt, which is then inherited by the child
+- For testing I chose RestAssure for end to end testing and Mockito for unit testing
+
+---
+
+## Features
+
+---
+
+## Known issues
+
+---
+
+## Future Goals
+
+---
+
+## What did you struggle with?
+
+---
+
+## Licensing Details
+
+- Public, free
