@@ -6,9 +6,13 @@ Event Calendar is the first part of a desing and creation series of smaller proj
 - Events Creator Frontend
 - Events Creator Api
 
+---
+
 ## Introduction
 
 This task will require you to use React Typescript. You will need to organize your code into components and determine where to handle the logic. You shouldn't use any component libraries.
+
+---
 
 ## MVP
 
@@ -16,6 +20,8 @@ Create a page that displays a calendar. The calendar should include a title show
 • Each of the days cells should be clickable.
 • When a user click on a chosen day, a modal should appear (empty for now)
 • The user should be able to navigate between months - view the upcoming month, previous month etc.
+
+---
 
 ## Build Steps
 
