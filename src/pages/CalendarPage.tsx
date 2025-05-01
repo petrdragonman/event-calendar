@@ -1,4 +1,6 @@
 import {
+  addMonths,
+  subMonths,
   eachDayOfInterval,
   endOfMonth,
   format,
@@ -12,7 +14,10 @@ import { useState } from "react";
 import Modal from "../components/modal/Modal";
 
 const CalendarPage = () => {
-  const currentDate = new Date();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  //const currentDate = new Date();
   const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const firstDayOfTheMonth = startOfMonth(currentDate);
   const lastDayOfTheMonth = endOfMonth(currentDate);
@@ -22,8 +27,6 @@ const CalendarPage = () => {
   });
   const firstDayIndex = getDay(firstDayOfTheMonth);
   const lastDayIndex = getDay(lastDayOfTheMonth);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDayClick = (day: Date) => {
     setSelectedDate(day);
@@ -34,6 +37,14 @@ const CalendarPage = () => {
     setIsModalOpen(false);
   };
 
+  const goToNextMonth = () => {
+    setCurrentDate(addMonths(currentDate, 1));
+  };
+
+  const goToPrevMonth = () => {
+    setCurrentDate(subMonths(currentDate, 1));
+  };
+
   return (
     <div className="container mx-auto p-4">
       <article className="flex flex-row gap-4 justify-center pb-6 pt-12">
@@ -42,13 +53,19 @@ const CalendarPage = () => {
             src="./right.svg"
             alt="left chevron"
             className="w-5 rotate-180"
+            onClick={goToPrevMonth}
           />
         </div>
         <div>
-          <h2 className="">{format(currentDate, "MMMM, yyyy")}</h2>
+          <h2 className="text-xl">{format(currentDate, "MMMM, yyyy")}</h2>
         </div>
         <div>
-          <img src="./right.svg" alt="right chevron" className="w-5" />
+          <img
+            src="./right.svg"
+            alt="right chevron"
+            className="w-5"
+            onClick={goToNextMonth}
+          />
         </div>
       </article>
       <section className="grid grid-cols-7 gap-2">
@@ -63,7 +80,7 @@ const CalendarPage = () => {
           return (
             <div
               key={index}
-              className="border rounded-md p-4 text-center"
+              // className="border rounded-md p-4 text-center"
             ></div>
           );
         })}
@@ -84,14 +101,14 @@ const CalendarPage = () => {
             </div>
           );
         })}
-        {Array.from({ length: lastDayIndex + 1 }).map((_, index) => {
+        {/* {Array.from({ length: lastDayIndex + 1 }).map((_, index) => {
           return (
             <div
               key={index}
               className="border rounded-md p-4 text-center"
             ></div>
           );
-        })}
+        })} */}
       </section>
       <Modal
         isOpen={isModalOpen}
