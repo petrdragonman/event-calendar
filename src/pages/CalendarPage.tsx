@@ -7,16 +7,24 @@ import {
   getDay,
   isToday,
   startOfMonth,
+  getDate,
 } from "date-fns";
 
 import { cn } from "clsx-for-tailwind";
 import { useState } from "react";
 import Modal from "../components/modal/Modal";
+import EventForm from "../components/EventForm/EventForm";
+import { EventFormData } from "../components/EventForm/schema";
+import EventCard from "../components/EventCard/EventCard";
+import { EventData } from "../services/eventDataService";
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+
+  const [eventsData, setEventsData] = useState<EventData[]>([]);
+
   //const currentDate = new Date();
   const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const firstDayOfTheMonth = startOfMonth(currentDate);
@@ -27,6 +35,8 @@ const CalendarPage = () => {
   });
   const firstDayIndex = getDay(firstDayOfTheMonth);
   const lastDayIndex = getDay(lastDayOfTheMonth);
+
+  //const eventsData: EventData[] = [];
 
   const handleDayClick = (day: Date) => {
     setSelectedDate(day);
@@ -43,6 +53,12 @@ const CalendarPage = () => {
 
   const goToPrevMonth = () => {
     setCurrentDate(subMonths(currentDate, 1));
+  };
+
+  const onSubmit = (data: EventFormData) => {
+    setIsModalOpen(false);
+    setEventsData((prevEvents) => [...prevEvents, data]);
+    console.log(data);
   };
 
   return (
@@ -97,7 +113,19 @@ const CalendarPage = () => {
                 }
               )}
             >
+              {day.getDate()}
+              {day.toLocaleDateString()}
+              {/* {day.toLocaleDateString()}
               {format(day, "d")}
+              {getDate(new Date(2025, 5, 1))} */}
+              {eventsData
+                .filter((e) => e.startDate == day.toLocaleDateString())
+                .map((e) => {
+                  return <EventCard key={e.eventName} event={e}></EventCard>;
+                })}
+              {/* {eventsData.length != 0 && (
+                <EventCard event={eventsData[0]}></EventCard>
+              )} */}
             </div>
           );
         })}
@@ -116,8 +144,10 @@ const CalendarPage = () => {
         title={selectedDate ? format(selectedDate, "EEEE, MMMM d, yyyy") : ""}
       >
         <div className="space-y-4">
-          <p>Form here ...</p>
-          <div className="flex justify-end space-x-2 mt-4">
+          <section>
+            <EventForm onSubmit={onSubmit} />
+          </section>
+          {/* <div className="flex justify-end space-x-2 mt-4">
             <button
               onClick={handleCloseModal}
               className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
@@ -130,7 +160,7 @@ const CalendarPage = () => {
             >
               Save Event
             </button>
-          </div>
+          </div> */}
         </div>
       </Modal>
     </div>
