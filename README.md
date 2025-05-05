@@ -27,6 +27,20 @@ Create a page that displays a calendar. The calendar should include a title show
 
 - how to build / run project
 
+1. Clone the repo and run
+
+```bash
+npm install
+```
+
+2. Run
+
+```bash
+npm run dev
+```
+
+3. And visit the provided url.
+
 ---
 
 ## Design Goals / Approach

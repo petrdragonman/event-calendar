@@ -11,7 +11,7 @@ import {
 } from "date-fns";
 
 import { cn } from "clsx-for-tailwind";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Modal from "../components/modal/Modal";
 import EventForm from "../components/EventForm/EventForm";
 import { EventFormData } from "../components/EventForm/schema";
@@ -61,6 +61,17 @@ const CalendarPage = () => {
     console.log(data);
   };
 
+  const eventsByDate = useMemo(() => {
+    return eventsData.reduce((acc: { [key: string]: EventData[] }, event) => {
+      const dateKey = format(event.startDate, "yyyy-MM-dd");
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(event);
+      return acc;
+    }, {});
+  }, [eventsData]);
+
   return (
     <div className="container mx-auto p-4">
       <article className="flex flex-row gap-4 justify-center pb-6 pt-12">
@@ -101,6 +112,8 @@ const CalendarPage = () => {
           );
         })}
         {daysInTheMonth.map((day, index) => {
+          const dateKey = format(day, "yyyy-MM-dd");
+          const todaysEvents = eventsByDate[dateKey] || [];
           return (
             <div
               key={index}
@@ -114,18 +127,18 @@ const CalendarPage = () => {
               )}
             >
               {day.getDate()}
-              {day.toLocaleDateString()}
-              {/* {day.toLocaleDateString()}
-              {format(day, "d")}
-              {getDate(new Date(2025, 5, 1))} */}
-              {eventsData
-                .filter((e) => e.startDate == day.toLocaleDateString())
+              {todaysEvents.map((event) => {
+                return (
+                  <EventCard key={event.eventName} event={event}></EventCard>
+                );
+              })}
+              {/* {eventsData
+                .filter(
+                  (e) => e.startDate === format(day, "yyyy-MM-dd").toString()
+                )
                 .map((e) => {
                   return <EventCard key={e.eventName} event={e}></EventCard>;
-                })}
-              {/* {eventsData.length != 0 && (
-                <EventCard event={eventsData[0]}></EventCard>
-              )} */}
+                })} */}
             </div>
           );
         })}
