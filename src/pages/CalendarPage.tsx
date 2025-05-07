@@ -22,10 +22,10 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [eventsData, setEventsData] = useState<EventData[]>([]);
 
-  //const currentDate = new Date();
   const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const firstDayOfTheMonth = startOfMonth(currentDate);
   const lastDayOfTheMonth = endOfMonth(currentDate);
@@ -34,17 +34,29 @@ const CalendarPage = () => {
     end: lastDayOfTheMonth,
   });
   const firstDayIndex = getDay(firstDayOfTheMonth);
-  const lastDayIndex = getDay(lastDayOfTheMonth);
-
-  //const eventsData: EventData[] = [];
+  //const lastDayIndex = getDay(lastDayOfTheMonth);
 
   const handleDayClick = (day: Date) => {
     setSelectedDate(day);
+    setSelectedEvent(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEventClick = (event: EventData) => {
+    setSelectedDate(new Date(event.startDate));
+    setSelectedEvent(event);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsEditing(false);
+    setSelectedEvent(null);
+  };
+
+  const handleEdit = () => {
+    console.log("handle edit");
+    setIsEditing(true);
   };
 
   const goToNextMonth = () => {
@@ -56,9 +68,16 @@ const CalendarPage = () => {
   };
 
   const onSubmit = (data: EventFormData) => {
+    if (eventsData.filter((e) => e.eventId === data.eventId).length !== 0) {
+      setEventsData((prevEvents) =>
+        prevEvents.map((event) =>
+          event.eventId === data.eventId ? data : event
+        )
+      );
+    } else {
+      setEventsData((prevEvents) => [...prevEvents, data]);
+    }
     setIsModalOpen(false);
-    setEventsData((prevEvents) => [...prevEvents, data]);
-    console.log(data);
   };
 
   const eventsByDate = useMemo(() => {
@@ -71,6 +90,43 @@ const CalendarPage = () => {
       return acc;
     }, {});
   }, [eventsData]);
+
+  const modalContent =
+    selectedEvent && !isEditing ? (
+      <div className="space-y-4">
+        <h3 className="text-lg font-bold">{selectedEvent.eventName}</h3>
+        <p>Start Date: {format(new Date(selectedEvent.startDate), "PPPP")}</p>
+        <p>End Date: {format(new Date(selectedEvent.endDate), "PPPP")}</p>
+        <p>Location: {selectedEvent.location}</p>
+        <p>Label: {selectedEvent.label}</p>
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={handleEdit}
+            className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleCloseModal}
+            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-600 transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    ) : (
+      <EventForm
+        onSubmit={onSubmit}
+        existingData={selectedEvent || undefined}
+        onCancel={() => {
+          if (selectedEvent) {
+            setIsEditing(false); // Switch back to view mode if editing
+          } else {
+            handleCloseModal(); // Close if creating new
+          }
+        }}
+      />
+    );
 
   return (
     <div className="container mx-auto p-4">
@@ -119,7 +175,7 @@ const CalendarPage = () => {
               key={index}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "border rounded-md p-6 text-center hover:border-orange-700 hover:text-orange-700",
+                "border rounded-md p-6 text-center h-20 hover:border-orange-700 hover:text-orange-700",
                 {
                   "bg-orange-100": isToday(day),
                   "text-orange-700": isToday(day),
@@ -129,16 +185,13 @@ const CalendarPage = () => {
               {day.getDate()}
               {todaysEvents.map((event) => {
                 return (
-                  <EventCard key={event.eventName} event={event}></EventCard>
+                  <EventCard
+                    key={event.eventName}
+                    event={event}
+                    onClick={handleEventClick}
+                  ></EventCard>
                 );
               })}
-              {/* {eventsData
-                .filter(
-                  (e) => e.startDate === format(day, "yyyy-MM-dd").toString()
-                )
-                .map((e) => {
-                  return <EventCard key={e.eventName} event={e}></EventCard>;
-                })} */}
             </div>
           );
         })}
@@ -154,27 +207,13 @@ const CalendarPage = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={selectedDate ? format(selectedDate, "EEEE, MMMM d, yyyy") : ""}
+        title={
+          selectedDate
+            ? format(selectedDate, "EEEE, MMMM d, yyyy")
+            : "Event Details"
+        }
       >
-        <div className="space-y-4">
-          <section>
-            <EventForm onSubmit={onSubmit} />
-          </section>
-          {/* <div className="flex justify-end space-x-2 mt-4">
-            <button
-              onClick={handleCloseModal}
-              className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleCloseModal}
-              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-            >
-              Save Event
-            </button>
-          </div> */}
-        </div>
+        {modalContent}
       </Modal>
     </div>
   );
