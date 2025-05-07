@@ -8,6 +8,8 @@ import {
   isToday,
   startOfMonth,
   getDate,
+  differenceInSeconds,
+  differenceInDays,
 } from "date-fns";
 
 import { cn } from "clsx-for-tailwind";
@@ -17,6 +19,7 @@ import EventForm from "../components/EventForm/EventForm";
 import { EventFormData } from "../components/EventForm/schema";
 import EventCard from "../components/EventCard/EventCard";
 import { EventData } from "../services/eventDataService";
+import { countDown } from "../components/EventForm/utils";
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -95,11 +98,14 @@ const CalendarPage = () => {
     selectedEvent && !isEditing ? (
       <div className="space-y-4">
         <h3 className="text-lg font-bold">{selectedEvent.eventName}</h3>
+        <h2 className="text-orange-600 font-bold ">
+          Event in {countDown(selectedEvent.startDate)}
+        </h2>
         <p>Start Date: {format(new Date(selectedEvent.startDate), "PPPP")}</p>
         <p>End Date: {format(new Date(selectedEvent.endDate), "PPPP")}</p>
         <p>Location: {selectedEvent.location}</p>
         <p>Label: {selectedEvent.label}</p>
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-2 gap-2">
           <button
             onClick={handleEdit}
             className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
@@ -120,9 +126,9 @@ const CalendarPage = () => {
         existingData={selectedEvent || undefined}
         onCancel={() => {
           if (selectedEvent) {
-            setIsEditing(false); // Switch back to view mode if editing
+            setIsEditing(false);
           } else {
-            handleCloseModal(); // Close if creating new
+            handleCloseModal();
           }
         }}
       />
