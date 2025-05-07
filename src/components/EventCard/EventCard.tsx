@@ -7,7 +7,7 @@ interface EventCardProps {
 
 const EventCard = ({ event, onClick }: EventCardProps) => {
   const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // This stops the event from bubbling up
+    e.stopPropagation();
     onClick?.(event);
   };
   return (

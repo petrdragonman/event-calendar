@@ -24,11 +24,6 @@ const EventForm = ({ onSubmit, existingData, onCancel }: EventFormProps) => {
     reset(existingData || {});
   }, [existingData, reset]);
 
-  // if (!existingData) {
-  //   console.log("UPDATE and display time to go");
-  // } else {
-  //   console.log("CREATE");
-  // }
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
