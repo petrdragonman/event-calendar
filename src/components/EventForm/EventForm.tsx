@@ -1,19 +1,28 @@
 import { useForm } from "react-hook-form";
 import { EventFormData, schema } from "./schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 
 interface EventFormProps {
   onSubmit: (data: EventFormData) => unknown;
+  existingData?: EventFormData;
+  onCancel: () => void;
 }
 
-const EventForm = ({ onSubmit }: EventFormProps) => {
+const EventForm = ({ onSubmit, existingData, onCancel }: EventFormProps) => {
   const {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm<EventFormData>({
     resolver: zodResolver(schema),
+    defaultValues: existingData || {},
   });
+
+  useEffect(() => {
+    reset(existingData || {});
+  }, [existingData, reset]);
 
   return (
     <form
@@ -21,10 +30,29 @@ const EventForm = ({ onSubmit }: EventFormProps) => {
       className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Create New Event
+        {existingData ? "Edit Event" : "Create New Event"}
       </h2>
 
       <div className="space-y-4">
+        {/* Event ID */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Event ID
+          </label>
+          <input
+            type="text"
+            {...register("eventId")}
+            className={`w-sm px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
+              errors.eventName ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter event ID"
+          />
+          {errors.eventId && (
+            <small className="text-red-500 text-xs mt-1 block">
+              {errors.eventId.message}
+            </small>
+          )}
+        </div>
         {/* Event Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -121,12 +149,20 @@ const EventForm = ({ onSubmit }: EventFormProps) => {
             </small>
           )}
         </div>
+        {/* Cancel Button */}
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
         {/* Submit Button */}
         <button
           type="submit"
           className="w-sm mt-6 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
         >
-          Create Event
+          {existingData ? "Update Event" : "Create Event"}
         </button>
       </div>
     </form>
