@@ -41,15 +41,15 @@ const EventForm = ({ onSubmit, existingData, onCancel }: EventFormProps) => {
           </label>
           <input
             type="text"
-            {...register("eventId")}
+            {...register("id")}
             className={`w-sm px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
               errors.eventName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Enter event ID"
           />
-          {errors.eventId && (
+          {errors.id && (
             <small className="text-red-500 text-xs mt-1 block">
-              {errors.eventId.message}
+              {errors.id.message}
             </small>
           )}
         </div>
