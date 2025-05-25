@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const schema = z.object({
-  eventId: z.coerce.number().min(1),
+  id: z.coerce.number().min(1),
   eventName: z.string().min(1, { message: "Event name is required" }),
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
     message: "Invalid date",

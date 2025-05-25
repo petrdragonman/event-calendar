@@ -7,18 +7,20 @@ import {
   getDay,
   isToday,
   startOfMonth,
-  getDate,
-  differenceInSeconds,
-  differenceInDays,
 } from "date-fns";
 
 import { cn } from "clsx-for-tailwind";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Modal from "../components/modal/Modal";
 import EventForm from "../components/EventForm/EventForm";
 import { EventFormData } from "../components/EventForm/schema";
 import EventCard from "../components/EventCard/EventCard";
-import { EventData } from "../services/eventDataService";
+import {
+  createEvent,
+  EventData,
+  getAllEvents,
+  updateEvent,
+} from "../services/eventDataService";
 import { countDown } from "../components/EventForm/utils";
 
 const CalendarPage = () => {
@@ -39,6 +41,12 @@ const CalendarPage = () => {
   const firstDayIndex = getDay(firstDayOfTheMonth);
   //const lastDayIndex = getDay(lastDayOfTheMonth);
 
+  useEffect(() => {
+    getAllEvents()
+      .then((events) => setEventsData(events))
+      .catch((e) => console.log(e));
+  }, []);
+
   const handleDayClick = (day: Date) => {
     setSelectedDate(day);
     setSelectedEvent(null);
@@ -58,7 +66,6 @@ const CalendarPage = () => {
   };
 
   const handleEdit = () => {
-    console.log("handle edit");
     setIsEditing(true);
   };
 
@@ -70,15 +77,17 @@ const CalendarPage = () => {
     setCurrentDate(subMonths(currentDate, 1));
   };
 
-  const onSubmit = (data: EventFormData) => {
-    if (eventsData.filter((e) => e.eventId === data.eventId).length !== 0) {
+  const onSubmit = async (data: EventFormData) => {
+    if (eventsData.filter((e) => e.id === data.id).length !== 0) {
+      const updatedEvent = await updateEvent(data.id, data);
       setEventsData((prevEvents) =>
         prevEvents.map((event) =>
-          event.eventId === data.eventId ? data : event
+          event.id === updatedEvent.id ? updatedEvent : event
         )
       );
     } else {
-      setEventsData((prevEvents) => [...prevEvents, data]);
+      const newEvent = await createEvent(data);
+      setEventsData((prevEvents) => [...prevEvents, newEvent]);
     }
     setIsModalOpen(false);
   };
@@ -99,7 +108,7 @@ const CalendarPage = () => {
       <div className="space-y-4">
         <h3 className="text-lg font-bold">{selectedEvent.eventName}</h3>
         <h2 className="text-orange-600 font-bold ">
-          Event in {countDown(selectedEvent.startDate)}
+          {countDown(selectedEvent.startDate)}
         </h2>
         <p>Start Date: {format(new Date(selectedEvent.startDate), "PPPP")}</p>
         <p>End Date: {format(new Date(selectedEvent.endDate), "PPPP")}</p>
@@ -192,7 +201,7 @@ const CalendarPage = () => {
               {todaysEvents.map((event) => {
                 return (
                   <EventCard
-                    key={event.eventName}
+                    key={event.id}
                     event={event}
                     onClick={handleEventClick}
                   ></EventCard>
