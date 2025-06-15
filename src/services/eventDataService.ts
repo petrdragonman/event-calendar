@@ -7,8 +7,11 @@ export interface EventData {
   label: string;
 }
 
+const EC2_BASE_URL =
+  "http://ec2-13-54-142-202.ap-southeast-2.compute.amazonaws.com:8080/";
+
 export const getAllEvents = async () => {
-  const response = await fetch("http://localhost:8080/events");
+  const response = await fetch(EC2_BASE_URL + "events");
   if (!response.ok) {
     throw new Error("Failed to fetch.");
   }
@@ -17,7 +20,7 @@ export const getAllEvents = async () => {
 
 export const deleteEvent = async (id: number) => {
   try {
-    const response = await fetch("http://localhost:8080/events/" + id, {
+    const response = await fetch(EC2_BASE_URL + "events/" + id, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -29,7 +32,7 @@ export const deleteEvent = async (id: number) => {
 };
 
 export const createEvent = async (data: EventData) => {
-  const response = await fetch("http://localhost:8080/events", {
+  const response = await fetch(EC2_BASE_URL + "events", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -43,7 +46,7 @@ export const createEvent = async (data: EventData) => {
 };
 
 export const updateEvent = async (id: number, data: any) => {
-  const response = await fetch("http://localhost:8080/events/" + id, {
+  const response = await fetch(EC2_BASE_URL + "events/" + id, {
     method: "PATCH",
     body: JSON.stringify(data),
     headers: {
