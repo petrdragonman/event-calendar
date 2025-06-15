@@ -20,6 +20,7 @@ import {
   EventData,
   getAllEvents,
   updateEvent,
+  deleteEvent,
 } from "../services/eventDataService";
 import { countDown } from "../components/EventForm/utils";
 
@@ -30,6 +31,7 @@ const CalendarPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [eventsData, setEventsData] = useState<EventData[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const firstDayOfTheMonth = startOfMonth(currentDate);
@@ -39,7 +41,6 @@ const CalendarPage = () => {
     end: lastDayOfTheMonth,
   });
   const firstDayIndex = getDay(firstDayOfTheMonth);
-  //const lastDayIndex = getDay(lastDayOfTheMonth);
 
   useEffect(() => {
     getAllEvents()
@@ -67,6 +68,25 @@ const CalendarPage = () => {
 
   const handleEdit = () => {
     setIsEditing(true);
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedEvent) return;
+
+    try {
+      await deleteEvent(selectedEvent.id);
+      setEventsData((prevEvents) =>
+        prevEvents.filter((event) => event.id !== selectedEvent.id)
+      );
+      setIsDeleteModalOpen(false);
+      handleCloseModal();
+    } catch (error) {
+      console.error("Failed to delete event:", error);
+    }
   };
 
   const goToNextMonth = () => {
@@ -114,19 +134,30 @@ const CalendarPage = () => {
         <p>End Date: {format(new Date(selectedEvent.endDate), "PPPP")}</p>
         <p>Location: {selectedEvent.location}</p>
         <p>Label: {selectedEvent.label}</p>
-        <div className="flex justify-end space-x-2 gap-2">
-          <button
-            onClick={handleEdit}
-            className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleCloseModal}
-            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-600 transition"
-          >
-            Close
-          </button>
+
+        <div className="flex justify-between">
+          <section className="flex justify-start space-x-2 gap-2">
+            <button
+              onClick={handleDeleteClick}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+          </section>
+          <section className="flex justify-end space-x-2 gap-2">
+            <button
+              onClick={handleEdit}
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleCloseModal}
+              className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-600 transition"
+            >
+              Close
+            </button>
+          </section>
         </div>
       </div>
     ) : (
@@ -210,14 +241,6 @@ const CalendarPage = () => {
             </div>
           );
         })}
-        {/* {Array.from({ length: lastDayIndex + 1 }).map((_, index) => {
-          return (
-            <div
-              key={index}
-              className="border rounded-md p-4 text-center"
-            ></div>
-          );
-        })} */}
       </section>
       <Modal
         isOpen={isModalOpen}
@@ -229,6 +252,32 @@ const CalendarPage = () => {
         }
       >
         {modalContent}
+      </Modal>
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Confirm Deletion"
+      >
+        <div className="space-y-4">
+          <p>
+            Are you sure you want to delete "{selectedEvent?.eventName}" event?
+          </p>
+          <div className="flex justify-end space-x-2 gap-2">
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-600 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteConfirm}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

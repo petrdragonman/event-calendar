@@ -149,21 +149,23 @@ const EventForm = ({ onSubmit, existingData, onCancel }: EventFormProps) => {
             </small>
           )}
         </div>
-        {/* Cancel Button */}
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
-        >
-          Cancel
-        </button>
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-sm mt-6 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
-        >
-          {existingData ? "Update Event" : "Create Event"}
-        </button>
+        <section className="flex gap-4 justify-between">
+          {/* Cancel Button */}
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
+          >
+            Cancel
+          </button>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-sm mt-6 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+          >
+            {existingData ? "Update Event" : "Create Event"}
+          </button>
+        </section>
       </div>
     </form>
   );
