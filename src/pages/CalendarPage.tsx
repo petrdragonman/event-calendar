@@ -7,6 +7,8 @@ import {
   getDay,
   isToday,
   startOfMonth,
+  addYears,
+  subYears,
 } from "date-fns";
 
 import { cn } from "clsx-for-tailwind";
@@ -93,8 +95,16 @@ const CalendarPage = () => {
     setCurrentDate(addMonths(currentDate, 1));
   };
 
+  const goToNextYear = () => {
+    setCurrentDate(addYears(currentDate, 1));
+  };
+
   const goToPrevMonth = () => {
     setCurrentDate(subMonths(currentDate, 1));
+  };
+
+  const goToPrevYear = () => {
+    setCurrentDate(subYears(currentDate, 1));
   };
 
   const onSubmit = async (data: EventFormData) => {
@@ -179,6 +189,14 @@ const CalendarPage = () => {
       <article className="flex flex-row gap-4 justify-center pb-6 pt-12">
         <div>
           <img
+            src="./double-right.svg"
+            alt="double left chevron"
+            className="w-5 rotate-180"
+            onClick={goToPrevYear}
+          />
+        </div>
+        <div>
+          <img
             src="./right.svg"
             alt="left chevron"
             className="w-5 rotate-180"
@@ -194,6 +212,14 @@ const CalendarPage = () => {
             alt="right chevron"
             className="w-5"
             onClick={goToNextMonth}
+          />
+        </div>
+        <div>
+          <img
+            src="./double-right.svg"
+            alt="double right chevron"
+            className="w-5"
+            onClick={goToNextYear}
           />
         </div>
       </article>

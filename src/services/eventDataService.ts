@@ -8,7 +8,7 @@ export interface EventData {
 }
 
 const EC2_BASE_URL =
-  "http://ec2-13-54-142-202.ap-southeast-2.compute.amazonaws.com:8080/";
+  "http://ec2-13-211-209-251.ap-southeast-2.compute.amazonaws.com:8080/";
 
 export const getAllEvents = async () => {
   const response = await fetch(EC2_BASE_URL + "events");
