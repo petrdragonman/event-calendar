@@ -35,7 +35,7 @@ const EventForm = ({ onSubmit, existingData, onCancel }: EventFormProps) => {
 
       <div className="space-y-4">
         {/* Event ID */}
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Event ID
           </label>
@@ -52,7 +52,7 @@ const EventForm = ({ onSubmit, existingData, onCancel }: EventFormProps) => {
               {errors.id.message}
             </small>
           )}
-        </div>
+        </div> */}
         {/* Event Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
